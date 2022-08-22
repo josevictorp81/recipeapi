@@ -10,5 +10,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeDetailSerializer(RecipeSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    
     class Meta(RecipeSerializer.Meta):
-        fields = RecipeSerializer.Meta.fields + ['description', 'link']
+        fields = RecipeSerializer.Meta.fields + ['description', 'link', 'user']
