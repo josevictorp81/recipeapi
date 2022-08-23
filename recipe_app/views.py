@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import ListModelMixin, UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -23,7 +23,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class TagViewSet(ListModelMixin, viewsets.GenericViewSet):
+class TagViewSet(ListModelMixin, UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = TagSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
