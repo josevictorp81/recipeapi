@@ -21,6 +21,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return RecipeSerializer
         return self.serializer_class
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class TagViewSet(ListModelMixin, UpdateModelMixin, DestroyModelMixin, viewsets.GenericViewSet):
