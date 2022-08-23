@@ -1,9 +1,10 @@
 from rest_framework import viewsets
+from rest_framework.mixins import ListModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Recipe
-from .serializers import RecipeSerializer, RecipeDetailSerializer
+from core.models import Recipe, Tag
+from .serializers import RecipeSerializer, RecipeDetailSerializer, TagSerializer
 
 class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeDetailSerializer
@@ -20,3 +21,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return RecipeSerializer
         return self.serializer_class
+
+
+class TagViewSet(ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = TagSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = Tag.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
