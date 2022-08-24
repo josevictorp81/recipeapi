@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.models import Recipe, Tag
 from .serializers import RecipeSerializer, RecipeDetailSerializer, TagSerializer
+# from .serializers import RecipeSerializer, RecipeDetailSerializer, ReadRecipeSerializer, TagSerializer
 
 class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeDetailSerializer
@@ -20,6 +21,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """ return serializer class """
         if self.action == 'list':
             return RecipeSerializer
+        # if self.action == 'create':
+        #     return RecipeSerializer
+        # if self.action == 'retrieve':
+        #     return RecipeDetailSerializer
         return self.serializer_class
     
     def perform_create(self, serializer):
