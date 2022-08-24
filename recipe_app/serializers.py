@@ -10,14 +10,15 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True, required=False)
+    """ utilizar quando o usuário tiver a opção de cadastar tags junto com receitas """
+    tags = TagSerializer(many=True, required=False) # listar as tags
     class Meta:
         model = Recipe
         fields = ['id', 'title', 'time_minutes', 'price', 'tags']
         read_only_fields = ['id']
     
     def create(self, validated_data):
-        """Create a recipe."""
+        """Cria receita e cria as tags"""
         tags = validated_data.pop('tags', [])
         recipe = Recipe.objects.create(**validated_data)
         auth_user = self.context['request'].user
