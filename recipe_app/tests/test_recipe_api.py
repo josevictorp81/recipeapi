@@ -270,4 +270,49 @@ class PrivateRecipeAPITest(APITestCase):
         for ingredient in payload['ingredients']:
             exists = recipe.ingredients.filter(user=self.user, name=ingredient['name']).exists()
             self.assertTrue(exists)
+    
+    def test_create_ingredient_on_update_recipe(self):
+        """ test create ingredient when update a recipe """
+        recipe = create_recipe(user=self.user)
+
+        payload = {'ingredients': [{'name': 'limes'}]}
+
+        url = detail_url(recipe_id=recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_ingredient = Ingredient.objects.get(user=self.user, name='limes')
+        self.assertIn(new_ingredient, recipe.ingredients.all())
+    
+    def test_update_recipe_assign_ingredients(self):
+        """ test assigning an existing ingredient when update a recipe """
+        ingredient1 = Ingredient.objects.create(user=self.user, name='pepper')
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient1)
+
+        ingredient2 = Ingredient.objects.create(user=self.user, name='chili')
+
+        payload = {'ingredients': [{'name': 'chili'}]}
+
+        url = detail_url(recipe_id=recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(ingredient2, recipe.ingredients.all())
+        self.assertNotIn(ingredient1, recipe.ingredients.all())
+
+    def test_clear_recipe_ingredients(self):
+        """ test clear a recipe ingredients """
+        ingredient = Ingredient.objects.create(user=self.user, name='garlic')
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient)
+
+        payload = {'ingredients': []}
+
+        url = detail_url(recipe_id=recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertNotIn(ingredient, recipe.ingredients.all())
+        self.assertEqual(recipe.ingredients.count(), 0)
         
