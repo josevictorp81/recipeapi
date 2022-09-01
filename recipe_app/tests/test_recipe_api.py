@@ -5,7 +5,6 @@ from django.urls import reverse
 from decimal import Decimal
 
 from core.models import Recipe, Tag, Ingredient
-# from recipe_app.serializers import RecipeSerializer, RecipeDetailSerializer, ReadRecipeSerializer
 from recipe_app.serializers import RecipeSerializer, RecipeDetailSerializer
 
 
@@ -182,7 +181,6 @@ class PrivateRecipeAPITest(APITestCase):
         """Test creating a recipe with existing tag."""
         tag_indian = Tag.objects.create(user=self.user, name='Indian')
         payload = {'title': 'Pongal', 'time_minutes': 60, 'price': Decimal('4.50'), 'tags': [{'name': 'Indian'}, {'name': 'Breakfast'}]}
-        # payload = {'title': 'Pongal', 'time_minutes': 60, 'price': Decimal('4.50'), 'tags': [tag_indian.id, {'name': 'Breakfast'}]}
         
         res = self.client.post(RECIPE_URL, payload, format='json')
 
